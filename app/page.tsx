@@ -19,6 +19,7 @@ export default function PerfectCircleChallenge() {
   const [bestScore, setBestScore] = useState(0)
   const [showInstructions, setShowInstructions] = useState(true)
   const [isSDKReady, setIsSDKReady] = useState(false)
+  const [isFarcasterContext, setIsFarcasterContext] = useState(false)
 
   // Initialize Farcaster MiniApp SDK
   useEffect(() => {
@@ -29,6 +30,7 @@ export default function PerfectCircleChallenge() {
         await sdk.actions.ready()
         console.log('MiniApp SDK ready() called successfully!')
         setIsSDKReady(true)
+        setIsFarcasterContext(true)
       } catch (error) {
         console.error('Failed to initialize MiniApp SDK:', error)
         // Fallback: still show the app even if SDK initialization fails
@@ -52,6 +54,7 @@ export default function PerfectCircleChallenge() {
           await sdk.actions.ready()
           console.log('Secondary MiniApp SDK ready() successful!')
           setIsSDKReady(true)
+          setIsFarcasterContext(true)
         } catch (error) {
           console.error('Secondary ready() call failed:', error)
         }
@@ -97,21 +100,49 @@ export default function PerfectCircleChallenge() {
   const handleShare = async () => {
     if (analysis) {
       const text = `I scored ${analysis.score}% on the Perfect Circle Challenge! 🎯 Can you beat my score?`
+      const url = window.location.href
       
+      try {
+        // Try Farcaster sharing first if we're in a Farcaster context
+        if (typeof sdk !== 'undefined' && sdk.actions && isFarcasterContext) {
+          console.log('Attempting Farcaster share...')
+          
+          // Create a cast with the Mini App embed
+          const castText = `${text}\n\nTry the challenge yourself! 👇`
+          
+          // Use the SDK to open the compose dialog with the embed
+          // This will automatically include the Mini App embed when the URL is detected
+          await sdk.actions.openUrl(`https://warpcast.com/~/compose?text=${encodeURIComponent(castText)}&embeds[]=${encodeURIComponent(url)}`)
+          
+          console.log('Farcaster share initiated successfully!')
+          return
+        }
+      } catch (error) {
+        console.log('Farcaster sharing not available, falling back to native sharing:', error)
+      }
+      
+      // Fallback to native sharing
       if (navigator.share) {
         try {
           await navigator.share({
             title: 'Perfect Circle Challenge',
             text: text,
-            url: window.location.href
+            url: url
           })
         } catch (err) {
-          // User cancelled sharing
+          // User cancelled sharing or share failed
+          console.log('Native sharing cancelled or failed:', err)
         }
       } else {
-        await navigator.clipboard.writeText(text + ' ' + window.location.href)
-        // You could add a toast notification here
-        alert('Score copied to clipboard! 📋')
+        // Final fallback: clipboard
+        try {
+          await navigator.clipboard.writeText(text + ' ' + url)
+          alert('Score copied to clipboard! 📋\n\nPaste it anywhere to share your score!')
+        } catch (clipboardErr) {
+          console.error('Clipboard access failed:', clipboardErr)
+          // Show the text in a prompt as final fallback
+          prompt('Copy this text to share your score:', text + ' ' + url)
+        }
       }
     }
   }
@@ -218,7 +249,7 @@ export default function PerfectCircleChallenge() {
               className="flex-1 h-12"
             >
               <Share2 className="w-4 h-4 mr-2" />
-              Share Score
+              {isFarcasterContext ? 'Cast Score' : 'Share Score'}
             </Button>
           )}
         </div>
