@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -8,6 +8,7 @@ import DrawingCanvas from '@/components/drawing-canvas'
 import ScoreDisplay from '@/components/score-display'
 import { Point, CircleAnalysis, analyzeCircle } from '@/lib/circle-math'
 import { RotateCcw, Share2, Trophy, Info, Target } from 'lucide-react'
+import { sdk } from '@farcaster/miniapp-sdk'
 
 export default function PerfectCircleChallenge() {
   const [drawnPoints, setDrawnPoints] = useState<Point[]>([])
@@ -17,6 +18,21 @@ export default function PerfectCircleChallenge() {
   const [attempts, setAttempts] = useState(0)
   const [bestScore, setBestScore] = useState(0)
   const [showInstructions, setShowInstructions] = useState(true)
+
+  // Initialize Farcaster MiniApp SDK
+  useEffect(() => {
+    const initMiniApp = async () => {
+      try {
+        // Wait for the app to be fully loaded and ready to display
+        await sdk.actions.ready()
+      } catch (error) {
+        console.error('Failed to initialize MiniApp SDK:', error)
+        // Fallback: still show the app even if SDK initialization fails
+      }
+    }
+
+    initMiniApp()
+  }, [])
 
   const handleDrawingStart = () => {
     setIsDrawing(true)

@@ -1,0 +1,30 @@
+{
+  "name": "Perfect Circle Challenge",
+  "short_name": "Circle Challenge",
+  "description": "Test your precision by drawing the perfect circle. Challenge your friends to beat your score!",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#dbeafe",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait",
+  "categories": ["games", "entertainment"],
+  "icons": [
+    {
+      "src": "/circle-challenge-preview.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "farcaster": {
+    "version": "1",
+    "manifestVersion": "1.0.0",
+    "name": "Perfect Circle Challenge",
+    "description": "Test your precision by drawing the perfect circle",
+    "homeUrl": "/",
+    "imageUrl": "/circle-challenge-preview.svg",
+    "buttonTitle": "Play Challenge",
+    "splashImageUrl": "/circle-challenge-preview.svg",
+    "splashBackgroundColor": "#dbeafe"
+  }
+}

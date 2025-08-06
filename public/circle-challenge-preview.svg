@@ -1,0 +1,45 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#dbeafe;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e0e7ff;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="1200" height="800" fill="url(#bgGradient)"/>
+  
+  <!-- Title -->
+  <text x="600" y="120" text-anchor="middle" font-family="system-ui, sans-serif" font-size="72" font-weight="bold" fill="#1f2937">
+    Perfect Circle Challenge
+  </text>
+  
+  <!-- Subtitle -->
+  <text x="600" y="180" text-anchor="middle" font-family="system-ui, sans-serif" font-size="36" fill="#4b5563">
+    Test your precision by drawing the perfect circle
+  </text>
+  
+  <!-- Canvas area -->
+  <rect x="300" y="250" width="600" height="400" rx="20" fill="white" stroke="#d1d5db" stroke-width="2"/>
+  
+  <!-- Example circles -->
+  <g>
+    <!-- Perfect circle (dashed red) -->
+    <circle cx="600" cy="450" r="120" fill="none" stroke="#ef4444" stroke-width="4" stroke-dasharray="10,5"/>
+    
+    <!-- User drawn circle (blue) -->
+    <path d="M 480 420 Q 520 320 600 330 Q 680 340 720 420 Q 700 520 600 530 Q 500 520 480 420" 
+          fill="none" stroke="#3b82f6" stroke-width="4"/>
+  </g>
+  
+  <!-- Score display -->
+  <rect x="450" y="680" width="300" height="80" rx="40" fill="#10b981" opacity="0.9"/>
+  <text x="600" y="730" text-anchor="middle" font-family="system-ui, sans-serif" font-size="32" font-weight="bold" fill="white">
+    🎯 87% Score
+  </text>
+  
+  <!-- Instructions -->
+  <text x="100" y="720" font-family="system-ui, sans-serif" font-size="24" fill="#6b7280">
+    Tap and drag to draw • Try to match the perfect circle
+  </text>
+</svg>
