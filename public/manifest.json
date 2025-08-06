@@ -10,21 +10,10 @@
   "categories": ["games", "entertainment"],
   "icons": [
     {
-      "src": "/circle-challenge-preview.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/icon.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
       "purpose": "any maskable"
     }
-  ],
-  "farcaster": {
-    "version": "1",
-    "manifestVersion": "1.0.0",
-    "name": "Perfect Circle Challenge",
-    "description": "Test your precision by drawing the perfect circle",
-    "homeUrl": "/",
-    "imageUrl": "/circle-challenge-preview.svg",
-    "buttonTitle": "Play Challenge",
-    "splashImageUrl": "/circle-challenge-preview.svg",
-    "splashBackgroundColor": "#dbeafe"
-  }
+  ]
 }

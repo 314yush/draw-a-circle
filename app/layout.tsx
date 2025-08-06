@@ -8,12 +8,16 @@ export const metadata: Metadata = {
   description: 'Test your precision by drawing the perfect circle. Challenge your friends to beat your score!',
   generator: 'Perfect Circle Challenge',
   manifest: '/manifest.json',
+  icons: {
+    icon: '/icon.jpg',
+    apple: '/icon.jpg',
+  },
   openGraph: {
     title: 'Perfect Circle Challenge',
     description: 'Test your precision by drawing the perfect circle. Challenge your friends to beat your score!',
     images: [
       {
-        url: '/circle-challenge-preview.svg',
+        url: '/image.jpg',
         width: 1200,
         height: 800,
         alt: 'Perfect Circle Challenge Preview',
@@ -23,7 +27,7 @@ export const metadata: Metadata = {
   other: {
     'fc:miniapp': JSON.stringify({
       version: '1',
-      imageUrl: '/circle-challenge-preview.svg',
+      imageUrl: '/image.jpg',
       button: {
         title: 'Perfect Circle Challenge',
         action: {
@@ -35,7 +39,7 @@ export const metadata: Metadata = {
     // For backward compatibility
     'fc:frame': JSON.stringify({
       version: '1',
-      imageUrl: '/circle-challenge-preview.svg',
+      imageUrl: '/image.jpg',
       button: {
         title: 'Perfect Circle Challenge',
         action: {
