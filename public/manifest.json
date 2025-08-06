@@ -1,7 +1,7 @@
 {
-  "name": "Perfect Circle Challenge",
-  "short_name": "Circle Challenge",
-  "description": "Test your precision by drawing the perfect circle. Challenge your friends to beat your score!",
+  "name": "draw circle",
+  "short_name": "circle",
+  "description": "try to draw a perfect circle",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#dbeafe",
