@@ -6,5 +6,10 @@
   "homeUrl": "/",
   "version": "1.0.0",
   "categories": ["games", "entertainment"],
-  "permissions": []
+  "permissions": [],
+  "accountAssociation": {
+    "header": "eyJmaWQiOjE4NTUsInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHhkMUE2MTE0ZkQwOTc0Qjc5MTUxMjgwYTJjODQ4NzBBODhhNzJhMzA0In0",
+    "payload": "eyJkb21haW4iOiJkcmF3LWEtY2lyY2xlLXBzaS52ZXJjZWwuYXBwIn0",
+    "signature": "MHhhN2JiNGY5YTg4MzExZWRkMmNjYTMxYjQ0OGZkZDk0Zjk2MDg5ZDA0NGVjMzVkYjM1N2UzM2FkNmQyNjVjZDJkMzBlYjY0ZGZkYWY0NTlmZGM1MWQ3MzYzOGNhNjkyYjMxZDYwNmIxYzE0YzUyYzk3MzFhZjBmY2JlZmQ1NzY5OTFi"
+  }
 }
