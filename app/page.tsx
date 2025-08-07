@@ -10,19 +10,7 @@ import { Point, CircleAnalysis, analyzeCircle } from '@/lib/circle-math'
 import { RotateCcw, Share2, Trophy, Info, Target } from 'lucide-react'
 import { sdk } from '@farcaster/miniapp-sdk'
 
-console.log('📦 [PAGE] SDK imported in page component:', typeof sdk, sdk ? 'available' : 'not available')
-
-// Call ready() immediately when the module loads - this is the key fix
-console.log('🔄 [PAGE] Starting sdk.actions.ready() call immediately...')
-sdk.actions.ready().then(() => {
-  console.log('✅ [PAGE] sdk.actions.ready() called successfully immediately!')
-}).catch((error) => {
-  console.error('❌ [PAGE] Failed to call sdk.actions.ready() immediately:', error)
-})
-
 export default function PerfectCircleChallenge() {
-  console.log('🎯 [PAGE] PerfectCircleChallenge component rendering...')
-  
   const [drawnPoints, setDrawnPoints] = useState<Point[]>([])
   const [analysis, setAnalysis] = useState<CircleAnalysis | null>(null)
   const [isDrawing, setIsDrawing] = useState(false)
@@ -33,40 +21,52 @@ export default function PerfectCircleChallenge() {
   const [isSDKReady, setIsSDKReady] = useState(false)
   const [isFarcasterContext, setIsFarcasterContext] = useState(false)
 
-  // Initialize Farcaster context detection
+  // Initialize Farcaster SDK
   useEffect(() => {
-    console.log('🔄 [PAGE] useEffect running - initializing Farcaster context...')
-    
-    const initFarcaster = async () => {
+    const initializeSDK = async () => {
       try {
-        console.log('🔄 [PAGE] Starting Farcaster context initialization...')
+        // Check if we're in a Farcaster context
+        const isInFarcaster = typeof window !== 'undefined' && (
+          window.location.href.includes('warpcast.com') ||
+          window.location.href.includes('farcaster.xyz') ||
+          window.navigator.userAgent.includes('Farcaster') ||
+          // Check for Farcaster-specific environment variables or globals
+          (typeof window !== 'undefined' && (window as any).farcaster)
+        )
         
-        // Check if SDK is available
-        if (typeof sdk !== 'undefined' && sdk.actions) {
-          console.log('✅ [PAGE] SDK is available, checking if ready() was called...')
+        if (isInFarcaster) {
+          setIsFarcasterContext(true)
+          console.log('🎯 Detected Farcaster context')
           
-          // Try to call ready() again as backup
-          try {
-            console.log('🔄 [PAGE] Attempting backup sdk.actions.ready() call...')
-            await sdk.actions.ready()
-            console.log('✅ [PAGE] Backup sdk.actions.ready() called successfully!')
-          } catch (readyError) {
-            console.log('⚠️ [PAGE] Backup ready() call failed (this might be expected):', readyError)
+          // Check if SDK is available and call ready()
+          if (typeof sdk !== 'undefined' && sdk && sdk.actions && sdk.actions.ready) {
+            try {
+              console.log('🔄 Calling sdk.actions.ready()...')
+              // Call ready() to hide the splash screen and display content
+              await sdk.actions.ready()
+              console.log('✅ Farcaster SDK ready() called successfully')
+              setIsSDKReady(true)
+            } catch (error) {
+              console.log('⚠️ Farcaster SDK ready() failed (this might be expected):', error)
+              setIsSDKReady(true) // Still mark as ready even if ready() fails
+            }
+          } else {
+            console.log('⚠️ Farcaster SDK not available or ready method not found')
+            setIsSDKReady(true)
           }
         } else {
-          console.log('⚠️ [PAGE] SDK not available in useEffect')
+          // Not in Farcaster context
+          console.log('🌐 Not in Farcaster context')
+          setIsSDKReady(true)
+          setIsFarcasterContext(false)
         }
-        
-        setIsSDKReady(true)
-        setIsFarcasterContext(true)
-        console.log('✅ [PAGE] Farcaster context initialized successfully!')
       } catch (error) {
-        console.error('❌ [PAGE] Failed to initialize Farcaster context:', error)
-        setIsSDKReady(true)
+        console.error('❌ Failed to initialize Farcaster SDK:', error)
+        setIsSDKReady(true) // Mark as ready even if initialization fails
       }
     }
 
-    initFarcaster()
+    initializeSDK()
   }, [])
 
   const handleDrawingStart = () => {
@@ -107,14 +107,13 @@ export default function PerfectCircleChallenge() {
       
       try {
         // Try Farcaster sharing first if we're in a Farcaster context
-        if (typeof sdk !== 'undefined' && sdk.actions && isFarcasterContext) {
+        if (isFarcasterContext && isSDKReady && typeof sdk !== 'undefined' && sdk.actions && sdk.actions.openUrl) {
           console.log('Attempting Farcaster share...')
           
           // Create a cast with the Mini App embed
           const castText = `${text}\n\nTry the challenge yourself! 👇`
           
           // Use the SDK to open the compose dialog with the embed
-          // This will automatically include the Mini App embed when the URL is detected
           await sdk.actions.openUrl(`https://warpcast.com/~/compose?text=${encodeURIComponent(castText)}&embeds[]=${encodeURIComponent(url)}`)
           
           console.log('Farcaster share initiated successfully!')
