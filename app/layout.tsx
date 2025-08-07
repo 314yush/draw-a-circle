@@ -2,6 +2,12 @@ import type { Metadata } from 'next'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
 import './globals.css'
+import { sdk } from '@farcaster/miniapp-sdk'
+
+// Call ready() immediately at the root level - this is the key fix
+sdk.actions.ready().catch((error) => {
+  console.error('Failed to call sdk.actions.ready() at root level:', error)
+})
 
 export const metadata: Metadata = {
   title: 'Perfect Circle Challenge',
