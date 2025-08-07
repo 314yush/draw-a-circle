@@ -13,9 +13,28 @@ import { sdk } from '@farcaster/miniapp-sdk'
 // Call ready() immediately when the module loads
 if (typeof window !== 'undefined') {
   // Call ready() as soon as possible to avoid the splash screen
-  sdk.actions.ready().catch((error) => {
-    console.error('Failed to call sdk.actions.ready() immediately:', error)
-  })
+  const callReadyImmediately = async () => {
+    try {
+      console.log('Calling sdk.actions.ready() immediately on module load...')
+      await sdk.actions.ready()
+      console.log('MiniApp SDK ready() called successfully on module load!')
+    } catch (error) {
+      console.error('Failed to call sdk.actions.ready() immediately:', error)
+    }
+  }
+  
+  // Call immediately
+  callReadyImmediately()
+  
+  // Also try again after a short delay to ensure it's called
+  setTimeout(() => {
+    callReadyImmediately()
+  }, 100)
+  
+  // And try again after a longer delay
+  setTimeout(() => {
+    callReadyImmediately()
+  }, 500)
 }
 
 export default function PerfectCircleChallenge() {
@@ -33,13 +52,13 @@ export default function PerfectCircleChallenge() {
   useEffect(() => {
     const callReady = async () => {
       try {
-        console.log('Calling sdk.actions.ready() immediately...')
+        console.log('Calling sdk.actions.ready() in useEffect...')
         await sdk.actions.ready()
-        console.log('MiniApp SDK ready() called successfully!')
+        console.log('MiniApp SDK ready() called successfully in useEffect!')
         setIsSDKReady(true)
         setIsFarcasterContext(true)
       } catch (error) {
-        console.error('Failed to call sdk.actions.ready():', error)
+        console.error('Failed to call sdk.actions.ready() in useEffect:', error)
         // Still mark as ready to avoid infinite loading
         setIsSDKReady(true)
       }
