@@ -18,56 +18,18 @@ export default function PerfectCircleChallenge() {
   const [attempts, setAttempts] = useState(0)
   const [bestScore, setBestScore] = useState(0)
   const [showInstructions, setShowInstructions] = useState(true)
-  const [isSDKReady, setIsSDKReady] = useState(false)
   const [isFarcasterContext, setIsFarcasterContext] = useState(false)
+  const [loaded, setLoaded] = useState(false)
 
-  // Initialize Farcaster SDK
   useEffect(() => {
-    const initializeSDK = async () => {
-      try {
-        // Check if we're in a Farcaster context
-        const isInFarcaster = typeof window !== 'undefined' && (
-          window.location.href.includes('warpcast.com') ||
-          window.location.href.includes('farcaster.xyz') ||
-          window.navigator.userAgent.includes('Farcaster') ||
-          // Check for Farcaster-specific environment variables or globals
-          (typeof window !== 'undefined' && (window as any).farcaster)
-        )
-        
-        if (isInFarcaster) {
-          setIsFarcasterContext(true)
-          console.log('🎯 Detected Farcaster context')
-          
-          // Check if SDK is available and call ready()
-          if (typeof sdk !== 'undefined' && sdk && sdk.actions && sdk.actions.ready) {
-            try {
-              console.log('🔄 Calling sdk.actions.ready()...')
-              // Call ready() to hide the splash screen and display content
-              await sdk.actions.ready()
-              console.log('✅ Farcaster SDK ready() called successfully')
-              setIsSDKReady(true)
-            } catch (error) {
-              console.log('⚠️ Farcaster SDK ready() failed (this might be expected):', error)
-              setIsSDKReady(true) // Still mark as ready even if ready() fails
-            }
-          } else {
-            console.log('⚠️ Farcaster SDK not available or ready method not found')
-            setIsSDKReady(true)
-          }
-        } else {
-          // Not in Farcaster context
-          console.log('🌐 Not in Farcaster context')
-          setIsSDKReady(true)
-          setIsFarcasterContext(false)
-        }
-      } catch (error) {
-        console.error('❌ Failed to initialize Farcaster SDK:', error)
-        setIsSDKReady(true) // Mark as ready even if initialization fails
-      }
+    if (!loaded) {
+      setLoaded(true)
     }
-
-    initializeSDK()
   }, [])
+
+  useEffect(() => {
+    if (loaded) sdk.actions.ready()
+  }, [loaded])
 
   const handleDrawingStart = () => {
     setIsDrawing(true)
@@ -107,7 +69,7 @@ export default function PerfectCircleChallenge() {
       
       try {
         // Try Farcaster sharing first if we're in a Farcaster context
-        if (isFarcasterContext && isSDKReady && typeof sdk !== 'undefined' && sdk.actions && sdk.actions.openUrl) {
+        if (isFarcasterContext && typeof sdk !== 'undefined' && sdk.actions && sdk.actions.openUrl) {
           console.log('Attempting Farcaster share...')
           
           // Create a cast with the Mini App embed
