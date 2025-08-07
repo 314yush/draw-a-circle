@@ -12,6 +12,14 @@ import { sdk } from '@farcaster/miniapp-sdk'
 
 console.log('📦 [PAGE] SDK imported in page component:', typeof sdk, sdk ? 'available' : 'not available')
 
+// Call ready() immediately when the module loads - this is the key fix
+console.log('🔄 [PAGE] Starting sdk.actions.ready() call immediately...')
+sdk.actions.ready().then(() => {
+  console.log('✅ [PAGE] sdk.actions.ready() called successfully immediately!')
+}).catch((error) => {
+  console.error('❌ [PAGE] Failed to call sdk.actions.ready() immediately:', error)
+})
+
 export default function PerfectCircleChallenge() {
   console.log('🎯 [PAGE] PerfectCircleChallenge component rendering...')
   

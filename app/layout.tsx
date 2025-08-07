@@ -2,17 +2,6 @@ import type { Metadata } from 'next'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
 import './globals.css'
-import { sdk } from '@farcaster/miniapp-sdk'
-
-console.log('📦 [ROOT] SDK imported at root level:', typeof sdk, sdk ? 'available' : 'not available')
-
-// Call ready() immediately at the root level - this is the key fix
-console.log('🔄 [ROOT] Starting sdk.actions.ready() call at root level...')
-sdk.actions.ready().then(() => {
-  console.log('✅ [ROOT] sdk.actions.ready() called successfully at root level!')
-}).catch((error) => {
-  console.error('❌ [ROOT] Failed to call sdk.actions.ready() at root level:', error)
-})
 
 export const metadata: Metadata = {
   title: 'Perfect Circle Challenge',
@@ -67,8 +56,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  console.log('🏗️ [ROOT] RootLayout component rendering...')
-  
   return (
     <html lang="en">
       <head>
