@@ -10,6 +10,12 @@ import { Point, CircleAnalysis, analyzeCircle } from '@/lib/circle-math'
 import { RotateCcw, Share2, Trophy, Info, Target } from 'lucide-react'
 import { sdk } from '@farcaster/miniapp-sdk'
 
+// Call ready() immediately when the SDK is imported - this is the key fix
+// The SDK checks for this call before React even starts
+sdk.actions.ready().catch((error) => {
+  console.error('Failed to call sdk.actions.ready() immediately:', error)
+})
+
 export default function PerfectCircleChallenge() {
   const [drawnPoints, setDrawnPoints] = useState<Point[]>([])
   const [analysis, setAnalysis] = useState<CircleAnalysis | null>(null)
@@ -21,23 +27,23 @@ export default function PerfectCircleChallenge() {
   const [isSDKReady, setIsSDKReady] = useState(false)
   const [isFarcasterContext, setIsFarcasterContext] = useState(false)
 
-  // Call sdk.actions.ready() after the app is fully loaded and ready to display
+  // Backup call in useEffect to ensure it's called
   useEffect(() => {
     const callReady = async () => {
       try {
-        console.log('Calling sdk.actions.ready() after app is loaded...')
+        console.log('Backup call to sdk.actions.ready() in useEffect...')
         await sdk.actions.ready()
-        console.log('MiniApp SDK ready() called successfully!')
+        console.log('MiniApp SDK ready() called successfully in useEffect!')
         setIsSDKReady(true)
         setIsFarcasterContext(true)
       } catch (error) {
-        console.error('Failed to call sdk.actions.ready():', error)
+        console.error('Failed to call sdk.actions.ready() in useEffect:', error)
         // Still mark as ready to avoid infinite loading
         setIsSDKReady(true)
       }
     }
 
-    // Call ready() after the component is mounted and ready
+    // Call ready() as backup
     callReady()
   }, []) // Empty dependency array ensures this runs after component mounts
 
