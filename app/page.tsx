@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -9,6 +9,14 @@ import ScoreDisplay from '@/components/score-display'
 import { Point, CircleAnalysis, analyzeCircle } from '@/lib/circle-math'
 import { RotateCcw, Share2, Trophy, Info, Target } from 'lucide-react'
 import { sdk } from '@farcaster/miniapp-sdk'
+
+// Call ready() immediately when the module loads
+if (typeof window !== 'undefined') {
+  // Call ready() as soon as possible to avoid the splash screen
+  sdk.actions.ready().catch((error) => {
+    console.error('Failed to call sdk.actions.ready() immediately:', error)
+  })
+}
 
 export default function PerfectCircleChallenge() {
   const [drawnPoints, setDrawnPoints] = useState<Point[]>([])
@@ -20,31 +28,26 @@ export default function PerfectCircleChallenge() {
   const [showInstructions, setShowInstructions] = useState(true)
   const [isSDKReady, setIsSDKReady] = useState(false)
   const [isFarcasterContext, setIsFarcasterContext] = useState(false)
-  const readyCalled = useRef(false)
 
-  // Initialize Farcaster MiniApp SDK - call ready() immediately
+  // Call sdk.actions.ready() immediately when component mounts
   useEffect(() => {
-    if (readyCalled.current) return
-    
-    const initMiniApp = async () => {
+    const callReady = async () => {
       try {
-        console.log('Initializing Farcaster MiniApp SDK...')
-        readyCalled.current = true
-        // Call ready() immediately when component mounts
+        console.log('Calling sdk.actions.ready() immediately...')
         await sdk.actions.ready()
         console.log('MiniApp SDK ready() called successfully!')
         setIsSDKReady(true)
         setIsFarcasterContext(true)
       } catch (error) {
-        console.error('Failed to initialize MiniApp SDK:', error)
-        // Fallback: still show the app even if SDK initialization fails
-        setIsSDKReady(true) // Mark as ready even if SDK fails
+        console.error('Failed to call sdk.actions.ready():', error)
+        // Still mark as ready to avoid infinite loading
+        setIsSDKReady(true)
       }
     }
 
-    // Call immediately without delay
-    initMiniApp()
-  }, [])
+    // Call immediately without any delay
+    callReady()
+  }, []) // Empty dependency array ensures this runs immediately
 
   const handleDrawingStart = () => {
     setIsDrawing(true)
