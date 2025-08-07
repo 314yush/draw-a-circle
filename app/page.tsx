@@ -10,7 +10,11 @@ import { Point, CircleAnalysis, analyzeCircle } from '@/lib/circle-math'
 import { RotateCcw, Share2, Trophy, Info, Target } from 'lucide-react'
 import { sdk } from '@farcaster/miniapp-sdk'
 
+console.log('📦 [PAGE] SDK imported in page component:', typeof sdk, sdk ? 'available' : 'not available')
+
 export default function PerfectCircleChallenge() {
+  console.log('🎯 [PAGE] PerfectCircleChallenge component rendering...')
+  
   const [drawnPoints, setDrawnPoints] = useState<Point[]>([])
   const [analysis, setAnalysis] = useState<CircleAnalysis | null>(null)
   const [isDrawing, setIsDrawing] = useState(false)
@@ -23,13 +27,33 @@ export default function PerfectCircleChallenge() {
 
   // Initialize Farcaster context detection
   useEffect(() => {
+    console.log('🔄 [PAGE] useEffect running - initializing Farcaster context...')
+    
     const initFarcaster = async () => {
       try {
-        console.log('Initializing Farcaster context...')
+        console.log('🔄 [PAGE] Starting Farcaster context initialization...')
+        
+        // Check if SDK is available
+        if (typeof sdk !== 'undefined' && sdk.actions) {
+          console.log('✅ [PAGE] SDK is available, checking if ready() was called...')
+          
+          // Try to call ready() again as backup
+          try {
+            console.log('🔄 [PAGE] Attempting backup sdk.actions.ready() call...')
+            await sdk.actions.ready()
+            console.log('✅ [PAGE] Backup sdk.actions.ready() called successfully!')
+          } catch (readyError) {
+            console.log('⚠️ [PAGE] Backup ready() call failed (this might be expected):', readyError)
+          }
+        } else {
+          console.log('⚠️ [PAGE] SDK not available in useEffect')
+        }
+        
         setIsSDKReady(true)
         setIsFarcasterContext(true)
+        console.log('✅ [PAGE] Farcaster context initialized successfully!')
       } catch (error) {
-        console.error('Failed to initialize Farcaster context:', error)
+        console.error('❌ [PAGE] Failed to initialize Farcaster context:', error)
         setIsSDKReady(true)
       }
     }
