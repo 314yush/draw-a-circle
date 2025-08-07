@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -20,13 +20,17 @@ export default function PerfectCircleChallenge() {
   const [showInstructions, setShowInstructions] = useState(true)
   const [isSDKReady, setIsSDKReady] = useState(false)
   const [isFarcasterContext, setIsFarcasterContext] = useState(false)
+  const readyCalled = useRef(false)
 
-  // Initialize Farcaster MiniApp SDK
+  // Initialize Farcaster MiniApp SDK - call ready() immediately
   useEffect(() => {
+    if (readyCalled.current) return
+    
     const initMiniApp = async () => {
       try {
         console.log('Initializing Farcaster MiniApp SDK...')
-        // Wait for the app to be fully loaded and ready to display
+        readyCalled.current = true
+        // Call ready() immediately when component mounts
         await sdk.actions.ready()
         console.log('MiniApp SDK ready() called successfully!')
         setIsSDKReady(true)
@@ -34,37 +38,13 @@ export default function PerfectCircleChallenge() {
       } catch (error) {
         console.error('Failed to initialize MiniApp SDK:', error)
         // Fallback: still show the app even if SDK initialization fails
+        setIsSDKReady(true) // Mark as ready even if SDK fails
       }
     }
 
-    // Add a small delay to ensure the app is fully mounted
-    const timer = setTimeout(() => {
-      initMiniApp()
-    }, 100)
-
-    return () => clearTimeout(timer)
+    // Call immediately without delay
+    initMiniApp()
   }, [])
-
-  // Secondary effect to ensure ready() is called after UI renders
-  useEffect(() => {
-    if (!isSDKReady) {
-      const ensureReady = async () => {
-        try {
-          console.log('Secondary attempt to call MiniApp ready()...')
-          await sdk.actions.ready()
-          console.log('Secondary MiniApp SDK ready() successful!')
-          setIsSDKReady(true)
-          setIsFarcasterContext(true)
-        } catch (error) {
-          console.error('Secondary ready() call failed:', error)
-        }
-      }
-
-      // Call after a longer delay to ensure everything is rendered
-      const timer = setTimeout(ensureReady, 1000)
-      return () => clearTimeout(timer)
-    }
-  }, [isSDKReady])
 
   const handleDrawingStart = () => {
     setIsDrawing(true)

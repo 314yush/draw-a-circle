@@ -6,5 +6,10 @@
   "homeUrl": "/",
   "version": "1.0.0",
   "categories": ["games", "entertainment"],
-  "permissions": []
-}
+  "permissions": [],
+  "developer": {
+    "name": "Piyush",
+    "url": "https://github.com/314yush"
+  },
+  "tags": ["circle", "drawing", "game", "precision", "challenge"]
+} 
